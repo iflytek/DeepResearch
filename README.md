@@ -47,7 +47,7 @@ This section will explain how to configure the local runtime environment for Dee
    ```bash
    git clone git@github.com:iflytek/DeepResearch.git 
    ```
-- Ensure you have Poetry installed.
+- Ensure you have Poetry installed(Recommended version:2.2.1).
    ```bash
    poetry --version
    # If Poetry is not installed yet, you can try installing it via the following methods
