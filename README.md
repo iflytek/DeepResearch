@@ -68,7 +68,7 @@ This section will explain how to configure the local runtime environment for Dee
  
 Edit `config/llms.toml` and `config/search.toml` files provide your actual API keys and configuration values: 
 
-- **api_base/api_key/model**: OpenAI-compatible API, from [XYYun MaaS](https://maas.xfyun.cn/modelSquare) or other platforms.
+- **api_base/api_key/model**: OpenAI-compatible API, from [Iflytek MaaS](https://maas.xfyun.cn/modelSquare) or other platforms.
 
 - **jina_api_key** or **tavily_api_key**: Get your key from [Jina](https://jina.ai/) or [Tavily](https://www.tavily.com/) for web page reading.
 
