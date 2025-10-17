@@ -1,0 +1,6 @@
+[search]
+# search engine (supports "jina" or "tavily" now)
+engine = "tavily"
+timeout = 30
+jina_api_key = "jina_xxxxxxxxx-RLKa8AVEHppbFJ"
+tavily_api_key = "tvly-xxxxxxxxx-l2N15UuLUq104H8X"
