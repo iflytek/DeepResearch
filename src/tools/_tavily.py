@@ -31,10 +31,10 @@ class TavilySearchClient(SearchClient):
                 max_results=top_n,
                 include_raw_content=True
             )
-            for search_result in search_response['results']:
+            for search_result in search_response.get('results', []):
                 search_results.append(SearchResult(
-                    url=search_result['url'],
-                    title=search_result['title'],
+                    url=search_result.get('url', ''),
+                    title=search_result.get('title', ''),
                     summary=search_result.get('content', ''),
                     content=search_result.get('raw_content', ''),
                     date=''
