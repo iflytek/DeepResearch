@@ -40,11 +40,12 @@ class JinaSearchClient(SearchClient):
             }
             response = requests.get(self._url, headers=self._headers, params=params)
             response.raise_for_status()
-            for data in response.json()["data"]:
+            result = response.json()
+            for data in result.get("data", []):
                 search_results.append(
                     SearchResult(
-                        url=data["url"],
-                        title=data["title"],
+                        url=data.get("url", ""),
+                        title=data.get("title", ""),
                         summary=data.get("description", ""),
                         content=data.get("content", ""),
                         date=data.get("publishedTime", ""),
