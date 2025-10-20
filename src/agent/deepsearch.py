@@ -4,6 +4,7 @@
 from typing import *
 from dataclasses import dataclass
 import re
+import traceback
 from datetime import datetime
 
 import json_repair
@@ -89,7 +90,7 @@ class DeepSearch:
         )
 
         if all_search:
-            deep_search_result.all_knowledge = self._extract_knowledge(outline, all_search)
+            deep_search_result.all_knowledge = self._extract_all_knowledge(outline, all_search)
         colored_print(f'Learning above webpage', color="purple")
         knowledge, answer = self._gen_answer(outline, deep_search_result.all_knowledge)
         deep_search_result.answer = answer
@@ -158,7 +159,8 @@ class DeepSearch:
                     judge_result.append(Judge(name=k))
 
         except Exception as e:
-            print(f'Error in judge query: {e}')
+            logger.error(f'Error in judge query: {e}')
+            logger.error(traceback.format_exc())
 
         return judge_result
 
@@ -172,38 +174,64 @@ class DeepSearch:
                 colored_print(result.url, color="blue", underline=True)
         return search_result
 
-    def _extract_knowledge(self, outline:str, search_results:Dict[str,List[search.SearchResult]]) -> List[Knowledge]:
+    def _extract_all_knowledge(self, outline:str, search_results:Dict[str,List[search.SearchResult]]) -> List[Knowledge]:
+        extract_limit = 32000
         knowledge_results: List[Knowledge] = []
         for search_result in search_results.values():
-            try:
-                search = ''
-                for i, result in enumerate(search_result):
-                    search += f'[document index {i}]\ntitle: {result.title}\ncontent: {result.content}\ndate: {result.date if result.date else "unknown"}\n\n'
-                text = llm(llm_type='evaluate', messages=apply_prompt_template(
-                    prompt_name='learning/extract_knowledge',
-                    state={
-                        'chapter_outline': outline,
-                        'search': search
-                    })
-                )
-                if not text:
+            content_len = 0
+            extract_search: List[search.SearchResult] = []
+            for result in search_result:
+                if not result.content:
                     continue
 
-                extract_result = json_repair.loads(text)
-                for knowledge in extract_result.get('knowledge', []):
-                    reference:List[search.SearchResult] = []
-                    for index in knowledge.get('snippets', []):
-                        if 0 <= int(index) < len(search_result):
-                            reference.append(search_result[int(index)])
-                    if reference:
-                        knowledge_results.append(Knowledge(
-                            insight=knowledge.get('insight', ''),
-                            snippets=knowledge.get('snippets', []),
-                            references=reference,
-                        ))
-            except Exception as e:
-                logger.error(f'extract result error:{e}')
+                if content_len + len(result.content) > extract_limit:
+                    knowledge_results.extend(self._extract_knowledge(outline, extract_search, extract_limit))
+                    extract_search = [result]
+                    content_len = len(result.content)
+                else:
+                    extract_search.append(result)
+                    content_len += len(result.content)
+            if extract_search:
+                knowledge_results.extend(self._extract_knowledge(outline, extract_search, extract_limit))
             
+        return knowledge_results
+
+    def _extract_knowledge(self, outline:str, search_results:List[search.SearchResult], extract_limit:int) -> List[Knowledge]:
+        knowledge_results: List[Knowledge] = []
+        if not search_results:
+            return knowledge_results
+
+        try:
+            search = ''
+            for i, result in enumerate(search_results):
+                search += f'[document index {i}]\ntitle: {result.title}\ncontent: {result.content}\ndate: {result.date if result.date else "unknown"}\n\n'
+            text = llm(llm_type='evaluate', messages=apply_prompt_template(
+                prompt_name='learning/extract_knowledge',
+                state={
+                    'chapter_outline': outline,
+                    'search': search[:extract_limit],
+                })
+            )
+            if not text:
+                return
+
+            extract_result = json_repair.loads(text)
+            for knowledge in extract_result.get('knowledge', []):
+                reference:List[search.SearchResult] = []
+                for index in knowledge.get('snippets', []):
+                    if 0 <= int(index) < len(search_results):
+                        reference.append(search_results[int(index)])
+                if reference:
+                    knowledge_results.append(Knowledge(
+                        insight=knowledge.get('insight', ''),
+                        snippets=knowledge.get('snippets', []),
+                        references=reference,
+                    ))
+
+        except Exception as e:
+            logger.error(f'extract result error:{e}')
+            logger.error(traceback.format_exc())
+        
         return knowledge_results
 
     def _gen_answer(self, outline:str, knowledge:List[Knowledge]) -> tuple[List[Knowledge], str]:
@@ -231,6 +259,8 @@ class DeepSearch:
                     used_knowledge.append(knowledge[int(idx)])
         except Exception as e:
             logger.error(f'evaluate error:{e}')
+            logger.error(traceback.format_exc())
+
         return used_knowledge, answer
 
     def _evaluate(self, outline:str, answer:str, judge_result:List[Judge]) -> List[EvalResult]:
@@ -291,6 +321,8 @@ class DeepSearch:
             research_result = json_repair.loads(text)
         except Exception as e:
             logger.error(f'generate research query error:{e}')
+            logger.error(traceback.format_exc())
+
         return research_result.get('search_query_list', [])
 
     def _get_all_used_knowledge(self, result: DeepSearchResult) -> List[Knowledge]:
@@ -304,8 +336,8 @@ if __name__ == '__main__':
         chapter='Introduction',
         sub_chapter=['Definition of "best game"', 'How to choose the best game'],
         chapter_outline='- Definition of "best game"\n- How to choose the best game',
-        max_depth=2,
-        search_top_n=3,
+        max_depth=3,
+        search_top_n=10,
     )
     result = deep_searcher.deep_search()
     print(result.re_knowledge)
