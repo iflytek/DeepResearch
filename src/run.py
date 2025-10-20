@@ -77,12 +77,12 @@ async def interactive_agent(max_depth: int = 3, save_as_html: bool = True):
     """
     messages: List[Union[HumanMessage, AIMessage]] = []
 
-    print("Welcome to iFlytek's DeepResearch! Enter your message and press Enter to send. \nType 'quit' to exit. "
-          "\nType 'clear' to start a new session.")
+    print("Welcome to iFlytek's DeepResearch!\n")
 
     while True:
         try:
-            user_input = input("\nPlease enter: ")
+            user_input = input("Enter your message and press Enter to send. \nType 'quit' to exit. "
+          "\nType 'clear' to start a new session.\nPlease enter: ")
         except KeyboardInterrupt:
             print("\nProgram interrupted")
             break
