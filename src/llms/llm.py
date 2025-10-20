@@ -7,16 +7,19 @@ from langchain_deepseek import ChatDeepSeek
 
 from src.config.llms_config import LLMType, llm_configs
 # Cache storage for LLM instances - key includes both type and streaming mode
-_llm_cache: Dict[tuple[LLMType, bool], ChatDeepSeek] = {}
+_llm_cache: Dict[tuple[LLMType, bool, int], ChatDeepSeek] = {}
 
 
-def _get_llm_instance(llm_type: LLMType, streaming: bool = False) -> ChatDeepSeek:
+def _get_llm_instance(llm_type: LLMType,
+                      streaming: bool = False,
+                      max_tokens: int = 8192) -> ChatDeepSeek:
     """
     Retrieves a cached ChatOpenAI instance or creates a new one with specified parameters.
 
     Args:
         llm_type: Type of LLM to retrieve (must be defined in LLMType)
         streaming: Whether to enable streaming mode
+        max_tokens: Maximum number of tokens to generate, defaults to 8192 (8K)
 
     Returns:
         Configured ChatOpenAI instance
@@ -25,7 +28,7 @@ def _get_llm_instance(llm_type: LLMType, streaming: bool = False) -> ChatDeepSee
         KeyError: If specified LLMType has no configuration
     """
     # Create composite cache key using both type and streaming mode
-    cache_key = (llm_type, streaming)
+    cache_key = (llm_type, streaming, max_tokens)
 
     if cache_key in _llm_cache:
         return _llm_cache[cache_key]
@@ -40,6 +43,7 @@ def _get_llm_instance(llm_type: LLMType, streaming: bool = False) -> ChatDeepSee
 
     # Explicitly set streaming mode based on parameter (overrides config if present)
     config_dict["streaming"] = streaming
+    config_dict["max_tokens"] = max_tokens
 
     llm_instance = ChatDeepSeek(**config_dict)
     _llm_cache[cache_key] = llm_instance
