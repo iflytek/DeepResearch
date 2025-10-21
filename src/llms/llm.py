@@ -44,6 +44,7 @@ def _get_llm_instance(llm_type: LLMType,
     # Explicitly set streaming mode based on parameter (overrides config if present)
     config_dict["streaming"] = streaming
     config_dict["max_tokens"] = max_tokens
+    config_dict["temperature"] = 0.6
 
     llm_instance = ChatDeepSeek(**config_dict)
     _llm_cache[cache_key] = llm_instance
