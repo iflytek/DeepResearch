@@ -214,7 +214,7 @@ class DeepSearch:
                 })
             )
             if not text:
-                return
+                return knowledge_results
 
             extract_result = json_repair.loads(text)
             for knowledge in extract_result.get('knowledge', []):
