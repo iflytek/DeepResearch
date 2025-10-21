@@ -1,29 +1,29 @@
 [basic]
 api_base="https://maas-api.cn-huabei-1.xf-yun.com/v1"
 model="xdeepseekv31"
-api_key="sk-xxxxxxx16E165Bd"
+api_key="sk-bNTrykT1ghekHmVzC67fD5C130D74c8e9cEa7e1a16E165Bd"
 
 [clarify]
-api_base="https://maas-api.cn-huabei-1.xf-yun.com/v1"
-model="xdeepseekv31"
-api_key="sk-xxxxxxx16E165Bd"
+api_base="https://api.deepseek.com/"
+model="deepseek-chat"
+api_key="sk-9de2d4e7db5d4588acefd281e13a7776"
 
 [planner]
 api_base="https://maas-api.cn-huabei-1.xf-yun.com/v1"
 model="xdeepseekr1"
-api_key="sk-xxxxxxx16E165Bd"
+api_key="sk-bNTrykT1ghekHmVzC67fD5C130D74c8e9cEa7e1a16E165Bd"
 
 [query_generation]
 api_base="https://maas-api.cn-huabei-1.xf-yun.com/v1"
 model="xdeepseekv31"
-api_key="sk-xxxxxxx16E165Bd"
+api_key="sk-bNTrykT1ghekHmVzC67fD5C130D74c8e9cEa7e1a16E165Bd"
 
 [evaluate]
 api_base="https://maas-api.cn-huabei-1.xf-yun.com/v1"
 model="xdeepseekv31"
-api_key="sk-xxxxxxx16E165Bd"
+api_key="sk-bNTrykT1ghekHmVzC67fD5C130D74c8e9cEa7e1a16E165Bd"
 
 [report]
 api_base="https://maas-api.cn-huabei-1.xf-yun.com/v1"
 model="xdeepseekv31"
-api_key="sk-xxxxxxx16E165Bd"
+api_key="sk-bNTrykT1ghekHmVzC67fD5C130D74c8e9cEa7e1a16E165Bd"
