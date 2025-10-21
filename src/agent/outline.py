@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 def outline_search_node(state: ReportState):
     """Search some knowledge for outline."""
-    sq = llm(llm_type="basic", messages=apply_prompt_template(
+    sq = llm(llm_type="query_generation", messages=apply_prompt_template(
         prompt_name="outline/outline_sq",
         state={
             "now": datetime.now().strftime("%a %b %d %Y"),

@@ -128,7 +128,7 @@ class DeepSearch:
     def _gen_search_query(self, outline:str) -> List[str]:
         search_query:List[str] = []
         try:
-            text = llm(llm_type='evaluate', messages=apply_prompt_template(
+            text = llm(llm_type='query_generation', messages=apply_prompt_template(
                 prompt_name='learning/search_query',
                 state={
                     'now': datetime.now().strftime("%a %b %d %Y"),
@@ -311,7 +311,7 @@ class DeepSearch:
 
     def _gen_research_query(self, query:List[str], outline:str, answer:str, unpass_eval:List[EvalResult]) -> List[str]:
         try:
-            text = llm(llm_type='evaluate', messages= apply_prompt_template(
+            text = llm(llm_type='query_generation', messages= apply_prompt_template(
                 prompt_name='learning/research_query',
                 state={
                     'now': datetime.now().strftime("%a %b %d %Y"),
