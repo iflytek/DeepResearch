@@ -10,6 +10,7 @@ Explanation of Included Variables:
 
 PROMPT = '''# Role
 You are a **content evaluation specialist**, skilled in determining whether the provided information meets the **timeliness requirements** implied by the topic.
+**Automatically detect the user's primary language and ensure all responses are in that language.**
 
 ## Task
 Based on explicit or implicit **time references** in the writing request, evaluate whether the referenced material is **outdated or still valid**. Express your reasoning in a **natural first-person inner monologue** style.

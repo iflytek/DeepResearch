@@ -13,6 +13,7 @@ Explanation of Included Variables:
 """
 
 SYSTEM_PROMPT = '''You are a report-writing expert in the {domain} field. Follow the rules and standards below strictly to produce content that is **factually accurate, logically rigorous, coherent, and insightful**.
+**Automatically detect the user's primary language and ensure all responses are in that language.**
 
 ## Core Constraints (Strictly Enforced, Do Not Output)
 
