@@ -4,6 +4,7 @@
 from typing import *
 from dataclasses import dataclass
 import re
+import json
 import traceback
 from datetime import datetime
 
@@ -254,9 +255,12 @@ class DeepSearch:
             answer_result = json_repair.loads(text)
             answer = answer_result.get('answer', '<no answer>')
             used_knowledge:List[Knowledge] = []
-            for idx in answer_result.get('quote_ids', []):
-                if 0 <= int(idx) < len(knowledge):
-                    used_knowledge.append(knowledge[int(idx)])
+            quote_id = answer_result.get('quote_id', [])
+            for idx in json.loads(str(quote_id)) or []:
+                id = int(str(idx))
+                if 0 <= id < len(knowledge):
+                    used_knowledge.append(knowledge[id])
+
         except Exception as e:
             logger.error(f'evaluate error:{e}')
             logger.error(traceback.format_exc())
