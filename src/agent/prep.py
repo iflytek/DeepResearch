@@ -145,7 +145,7 @@ def classify_node(state: ReportState):
 
 def clarify_node(state: ReportState):
     """Clarify user issues, only clarify once"""
-    clarify = llm(llm_type="basic", messages=apply_prompt_template(
+    clarify = llm(llm_type="clarify", messages=apply_prompt_template(
         prompt_name="prep/clarify",
         state={
             "query": state.get("topic"),

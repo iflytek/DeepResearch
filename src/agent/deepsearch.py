@@ -4,6 +4,7 @@
 from typing import *
 from dataclasses import dataclass
 import re
+import json
 import traceback
 from datetime import datetime
 
@@ -127,7 +128,7 @@ class DeepSearch:
     def _gen_search_query(self, outline:str) -> List[str]:
         search_query:List[str] = []
         try:
-            text = llm(llm_type='evaluate', messages=apply_prompt_template(
+            text = llm(llm_type='query_generation', messages=apply_prompt_template(
                 prompt_name='learning/search_query',
                 state={
                     'now': datetime.now().strftime("%a %b %d %Y"),
@@ -213,7 +214,7 @@ class DeepSearch:
                 })
             )
             if not text:
-                return
+                return knowledge_results
 
             extract_result = json_repair.loads(text)
             for knowledge in extract_result.get('knowledge', []):
@@ -254,9 +255,12 @@ class DeepSearch:
             answer_result = json_repair.loads(text)
             answer = answer_result.get('answer', '<no answer>')
             used_knowledge:List[Knowledge] = []
-            for idx in answer_result.get('quote_ids', []):
-                if 0 <= int(idx) < len(knowledge):
-                    used_knowledge.append(knowledge[int(idx)])
+            quote_id = answer_result.get('quote_id', [])
+            for idx in json.loads(str(quote_id)) or []:
+                id = int(str(idx))
+                if 0 <= id < len(knowledge):
+                    used_knowledge.append(knowledge[id])
+
         except Exception as e:
             logger.error(f'evaluate error:{e}')
             logger.error(traceback.format_exc())
@@ -307,7 +311,7 @@ class DeepSearch:
 
     def _gen_research_query(self, query:List[str], outline:str, answer:str, unpass_eval:List[EvalResult]) -> List[str]:
         try:
-            text = llm(llm_type='evaluate', messages= apply_prompt_template(
+            text = llm(llm_type='query_generation', messages= apply_prompt_template(
                 prompt_name='learning/research_query',
                 state={
                     'now': datetime.now().strftime("%a %b %d %Y"),

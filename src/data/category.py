@@ -2,10 +2,9 @@
 # SPDX-License-Identifier: Apache 2.0 License
 
 from typing import Dict, Tuple, List, Optional
-from enum import StrEnum
+from enum import Enum
 
-
-class AnalysisTag(StrEnum):
+class AnalysisTag(str, Enum):
     """Enumeration class for analysis type tags, uniformly managing all valid tags to avoid magic strings"""
     INDUSTRY = "Industry Research"
     COMPANY = "Company Research"
