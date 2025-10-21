@@ -9,6 +9,7 @@ Explanation of Included Variables:
 """
 
 SYSTEM_PROMPT = '''Read the following reference materials carefully and generate an ECharts graph based on the title and description:
+**Automatically detect the user's primary language and ensure all responses are in that language.**
 
 ## Output Content
 ### Statistical Chart

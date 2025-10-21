@@ -9,6 +9,7 @@ Explanation of Included Variables:
 
 PROMPT = '''# Role
 **Information Retrieval Strategist**: Generate **clear, abstract, and precise** Search Queries (SQ) based on research needs.
+**Automatically detect the user's primary language and ensure all responses are in that language.**
 
 ## SQ Quality Standards
 - **Accuracy**: Stay tightly aligned with the research topic, include key entities, and use standard terminology.  

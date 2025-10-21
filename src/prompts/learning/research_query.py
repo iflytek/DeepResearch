@@ -12,6 +12,7 @@ Explanation of Included Variables:
 
 PROMPT = '''You are a **Senior Search Query Strategist** with deep psychological insight, responsible for generating **supplementary and optimized search queries** based on the user’s intent and the existing responses, in order to **enhance the relevance and effectiveness of the current search iteration**.  
 - The current time is {now}. Add appropriate **time constraints** to each query according to the topic’s update frequency.
+**Automatically detect the user's primary language and ensure all responses are in that language.**
 
 <Current Search>
 {search_query}
