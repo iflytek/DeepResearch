@@ -107,6 +107,7 @@ def save_local_node(state: ReportState, config: RunnableConfig):
     Save the report locally
     """
     save_path = config.get("configurable", {}).get("save_path", "./example")
+    file_base = f"report_{str(int(time.time() * 1000))}"
     try:
         os.makedirs(save_path, exist_ok=True)
     except OSError as e:
@@ -116,11 +117,13 @@ def save_local_node(state: ReportState, config: RunnableConfig):
     references = [f"[^{k['id']}]: {k['url']}" for k in knowledge]
     references = '\n'.join(references)
     report = f"{report}\n\n{references}"
+    with open(os.path.join(save_path, f"{file_base}.md"), 'w', encoding='utf-8') as f:
+        f.write(report)
     outline = state.get("outline")
     need_html = config.get("configurable", {}).get("save_as_html", True)
     if need_html:
         html = markdown2html(outline.title, report)
-        file_name = f"report_{str(int(time.time() * 1000))}.html"
+        file_name = f"{file_base}.html"
         file_path = os.path.join(save_path, file_name)
         try:
             with open(file_path, 'w', encoding='utf-8') as f:
