@@ -219,13 +219,14 @@ class DeepSearch:
             extract_result = json_repair.loads(text)
             for knowledge in extract_result.get('knowledge', []):
                 reference:List[search.SearchResult] = []
-                for index in knowledge.get('snippets', []):
-                    if 0 <= int(index) < len(search_results):
-                        reference.append(search_results[int(index)])
+                snippets = knowledge.get('snippets', [])
+                for id in self._load_id_array(snippets):
+                    if 0 <= id < len(search_results):
+                        reference.append(search_results[id])
                 if reference:
                     knowledge_results.append(Knowledge(
                         insight=knowledge.get('insight', ''),
-                        snippets=knowledge.get('snippets', []),
+                        snippets=self._to_id_array(snippets),
                         references=reference,
                     ))
 
@@ -255,9 +256,8 @@ class DeepSearch:
             answer_result = json_repair.loads(text)
             answer = answer_result.get('answer', '<no answer>')
             used_knowledge:List[Knowledge] = []
-            quote_id = answer_result.get('quote_id', [])
-            for idx in json.loads(str(quote_id)) or []:
-                id = int(str(idx))
+            quote_ids = answer_result.get('quote_ids', [])
+            for id in self._load_id_array(quote_ids):
                 if 0 <= id < len(knowledge):
                     used_knowledge.append(knowledge[id])
 
@@ -334,12 +334,50 @@ class DeepSearch:
             return []
         return result.used_knowledge + self._get_all_used_knowledge(result.children)
 
+    def _to_id_array(self, ids:object) -> List[str]:
+        if not ids:
+            return []
+        try:
+            if isinstance(ids, str):
+                ids = json.loads(str(ids)) or []
+            if isinstance(ids, list):
+                ids = list(ids)
+            result: List[str] = []
+            for id in ids:
+                try:
+                    num = str(id)
+                    result.append(num)
+                except:
+                    continue
+            return result
+        except:
+            return []
+
+    def _load_id_array(self, ids:object) -> List[int]:
+        if not ids:
+            return []
+        try:
+            if isinstance(ids, str):
+                ids = json.loads(str(ids)) or []
+            if isinstance(ids, list):
+                ids = list(ids)
+            result: List[int] = []
+            for id in ids:
+                try:
+                    num = int(str(id))
+                    result.append(num)
+                except:
+                    continue
+            return result
+        except:
+            return []
+
 if __name__ == '__main__':
     deep_searcher = DeepSearch(
-        title='The best pc game in 2024',
-        chapter='Introduction',
-        sub_chapter=['Definition of "best game"', 'How to choose the best game'],
-        chapter_outline='- Definition of "best game"\n- How to choose the best game',
+        title='中国未来5年房价趋势分析',
+        chapter='I. 行业概述',
+        sub_chapter=[],
+        chapter_outline='通过PEST分解政治因素（如限购政策和住房保障）、经济因素（如GDP增速和利率变动）、社会因素（如人口老龄化和城市化率）、技术因素（如智能建筑和绿色科技）。评估行业当前处于转型期，识别关键驱动如政策导向和消费升级。\n定义房地产行业范围，涵盖住宅、商业物业及整体市场，应用PEST框架分析政策调控、经济驱动、社会需求和技术创新背景，评估行业生命周期阶段以确定成熟度及核心增长动力如城镇化和投资需求。',
         max_depth=3,
         search_top_n=10,
     )
