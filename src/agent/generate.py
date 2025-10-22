@@ -55,8 +55,12 @@ def generate_node(state: ReportState):
                     prev = num
             return ''.join(result)
 
-        colored_print(f"{'#' * level2_chapter.level} {level2_chapter.title}\n", color="green", end="")
-        final_report += f"{'#' * level2_chapter.level} {level2_chapter.title}\n"
+        chapter_title = f"{'#' * level2_chapter.level} {level2_chapter.title}"
+        colored_print(f"{chapter_title}\n", color="green", end="")
+
+        prev_report = final_report + f'\n{chapter_title}\n'
+        chapter_report = ''
+
         level2_chapter.merge_knowledge()
         knowledge = level2_chapter.merge_knowledge().get_knowledge_str()
         content_processor = ContentProcessor(knowledge)
@@ -69,7 +73,7 @@ def generate_node(state: ReportState):
                     "chapter_outline": level2_chapter.get_outline(),
                     "outline": outline.get_outline(),
                     "reference": knowledge,
-                    "above": final_report
+                    "above": prev_report
                 }
         ), stream=True):
             if thinking:
@@ -80,9 +84,14 @@ def generate_node(state: ReportState):
                     for output_str in output_strs:
                         pattern = re.compile(r"(\[\^[^\[\]]+\] *)+")
                         output_str = pattern.sub(lambda m: ref_replace(m.group(0)), output_str)
-                        final_report += output_str
+                        chapter_report += output_str
                         colored_print(output_str, color="green", end="")
         colored_print('\n', color="green")
+        if chapter_report.count(chapter_title):
+            final_report = final_report + '\n' + chapter_report
+        else:
+            final_report = prev_report + chapter_report
+
     return {
                 "final_report": final_report,
                 "output": {
