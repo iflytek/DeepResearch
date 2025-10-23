@@ -97,3 +97,7 @@ We welcome contributions of all kinds! Please see our [Contributing Guide](CONTR
 ## License
 
 This project is licensed under the [Apache 2.0 License](LICENSE).
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=iflytek/DeepResearch&type=date&legend=top-left)](https://www.star-history.com/#iflytek/DeepResearch&type=date&legend=top-left)
