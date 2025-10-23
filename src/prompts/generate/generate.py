@@ -50,15 +50,15 @@ SYSTEM_PROMPT = '''You are a report-writing expert in the {domain} field. Follow
 Use the following tools flexibly to improve clarity and readability:
 
 **Chart Generation**: Generate ECharts charts for visualizing **data trends or relationships**.  
-<Chart>
+<chart>
 <description>Explain the role of the chart in the text and specify the data dimensions</description>
-</Chart>
+</chart>
 
 Table Generation: Used for presenting precise data and multi-dimensional comparisons (e.g., financial indicators, parameter comparisons, itemized lists).
-<Table>
+<table>
 <title>Table Title</title>
 <markdown>Table content (in Markdown format)</markdown>
-</Table>
+</table>
 
 ### Execution Principles
 1. All charts must be generated strictly from the reference materials. Remove incomplete or invalid dimensions before supplementing missing data.
