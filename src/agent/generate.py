@@ -153,7 +153,7 @@ class OutputStatus:
 
 class ContentProcessor:
     def __init__(self, knowledge: str):
-        self.tools = ["Table", "Chart"]
+        self.tools = ["table", "chart"]
         self.buffer = ""
         self.current_tool = ""
         self.report = ""
@@ -204,7 +204,7 @@ class ContentProcessor:
                 self.status = OutputStatus.NormalContentStatus
             elif char == ">":
                 for tool in self.tools:
-                    if f"<{tool}>" == self.buffer:
+                    if f"<{tool}>" == self.buffer.lower():
                         self.current_tool = tool
                         self.status = OutputStatus.ToolsOutput
                         break
@@ -213,7 +213,7 @@ class ContentProcessor:
         elif self.status == OutputStatus.ToolsOutput:
             self.buffer += char
             if char == ">":
-                if self.buffer.endswith(f"</{self.current_tool}>"):
+                if self.buffer.lower().endswith(f"</{self.current_tool}>"):
                     tool_result = self._process_tool(self.buffer, self.current_tool)
                     if tool_result:
                         self.result.append(tool_result)
@@ -221,13 +221,13 @@ class ContentProcessor:
                     self.status = OutputStatus.NormalContentStatus
 
     def _process_tool(self, tool_content: str, tool: str) -> str:
-        if tool == "Table":
+        if tool == "table":
             table = extract_xml_content(tool_content, "markdown")
             if table:
                 return table[0]
             else:
                 return ""
-        elif tool == "Chart":
+        elif tool == "chart":
             description = extract_xml_content(tool_content, "description")
             if description:
                 description = description[0]
