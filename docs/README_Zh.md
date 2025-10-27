@@ -29,7 +29,7 @@ DeepResearch专注于解决复杂的信息分析问题，并支持个人开发�
    <img 
       src="framework.png" 
       alt="framework" 
-      style="width: 800px; height: 400px; vertical-align: middle; margin-right: 0;" 
+      style="width: 600px; height: 450px; vertical-align: middle; margin-right: 0;" 
     >
 </div>
 
